@@ -63,8 +63,7 @@ public class CreateController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher view = request.getRequestDispatcher(CREATE_PATH);
-        view.forward(request, response);
+        response.sendRedirect(response.encodeRedirectURL(CREATE_PATH));
     }
 
     /**

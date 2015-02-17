@@ -36,12 +36,10 @@ public class ListController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String destination = "";
+        String destination = RESULTS_PAGE;
         try{
             HotelDaoStrategy hotelDAO = new HotelDao();
             List<HotelModel> hotelList = hotelDAO.getAllHotels();
-            
-            destination = RESULTS_PAGE;
             
             request.setAttribute("list", hotelList);
         }

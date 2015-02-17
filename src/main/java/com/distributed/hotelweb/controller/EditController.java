@@ -119,10 +119,10 @@ public class EditController extends HttpServlet {
         {
             destination = ERROR_PATH;
             request.setAttribute("msg", e.getMessage());
+            RequestDispatcher view = request.getRequestDispatcher(destination);
+            view.forward(request, response);
         }
-        
-        RequestDispatcher view = request.getRequestDispatcher(destination);
-        view.forward(request, response);
+        response.sendRedirect(response.encodeRedirectURL(destination));
     }
 
     /**
