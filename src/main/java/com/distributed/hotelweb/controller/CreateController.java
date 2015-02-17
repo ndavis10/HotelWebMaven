@@ -100,7 +100,7 @@ public class CreateController extends HttpServlet {
             request.setAttribute("msg", e.getMessage());
         }
         
-        RequestDispatcher view = request.getRequestDispatcher(destination);
+        RequestDispatcher view = request.getRequestDispatcher(response.encodeRedirectURL(destination));
         view.forward(request, response);
     }
 

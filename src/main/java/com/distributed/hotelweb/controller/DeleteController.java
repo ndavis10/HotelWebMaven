@@ -83,7 +83,7 @@ public class DeleteController extends HttpServlet {
             request.setAttribute("msg", e.getMessage());
         }
         
-        RequestDispatcher view = request.getRequestDispatcher(destination);
+        RequestDispatcher view = request.getRequestDispatcher(response.encodeRedirectURL(destination));
         view.forward(request, response);
     }
 
@@ -113,7 +113,7 @@ public class DeleteController extends HttpServlet {
         {
             destination = ERROR_PATH;
             request.setAttribute("msg", e.getMessage());
-            RequestDispatcher view = request.getRequestDispatcher(destination);
+            RequestDispatcher view = request.getRequestDispatcher(response.encodeRedirectURL(destination));
             view.forward(request, response);
         }
         response.sendRedirect(response.encodeRedirectURL(destination));
