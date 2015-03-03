@@ -25,6 +25,7 @@ public class EditController extends HttpServlet {
     private static final String EDIT_PATH = "/View/edit.jsp";
     private static final String COMPLETE_PATH = "/List";
     private static final String ERROR_PATH = "/error.jsp";
+    private static final String DAO_PARAM = "HotelDao";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -68,11 +69,11 @@ public class EditController extends HttpServlet {
         
         try
         {
-            HotelDao hotelDao = new HotelDao();
+            HotelDaoStrategy hotelDAO = (HotelDaoStrategy)Class.forName(request.getServletContext().getInitParameter(DAO_PARAM)).newInstance();
             
             int id = Integer.parseInt(request.getParameter("id"));
             
-            HotelModel hotel = hotelDao.getSingleHotel(id).get(0);
+            HotelModel hotel = hotelDAO.getSingleHotel(id).get(0);
             
             request.setAttribute("hotel", hotel);
         }
@@ -82,7 +83,7 @@ public class EditController extends HttpServlet {
             request.setAttribute("msg", e.getMessage());
         }
         
-        RequestDispatcher view = request.getRequestDispatcher(response.encodeRedirectURL(destination));
+        RequestDispatcher view = request.getRequestDispatcher(destination);
         view.forward(request, response);
     }
 
@@ -101,7 +102,7 @@ public class EditController extends HttpServlet {
         String destination = COMPLETE_PATH;
                 
         try{
-            HotelDaoStrategy hotelDAO = new HotelDao();
+            HotelDaoStrategy hotelDAO = (HotelDaoStrategy)Class.forName(request.getServletContext().getInitParameter(DAO_PARAM)).newInstance();
             HotelModel editHotel = new HotelModel();
             editHotel.setHotelID(Integer.parseInt(request.getParameter("id")));
             editHotel.setHotelName(request.getParameter("name"));
@@ -119,10 +120,10 @@ public class EditController extends HttpServlet {
         {
             destination = ERROR_PATH;
             request.setAttribute("msg", e.getMessage());
-            RequestDispatcher view = request.getRequestDispatcher(response.encodeRedirectURL(destination));
-            view.forward(request, response);
         }
-        response.sendRedirect(response.encodeRedirectURL(destination));
+        
+        RequestDispatcher view = request.getRequestDispatcher(destination);
+        view.forward(request, response);
     }
 
     /**

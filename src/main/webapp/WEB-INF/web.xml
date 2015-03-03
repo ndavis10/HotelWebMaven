@@ -8,6 +8,10 @@
         <servlet-name>CreateController</servlet-name>
         <servlet-class>com.distributed.hotelweb.controller.CreateController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>WizardController</servlet-name>
+        <servlet-class>com.distributed.hotelweb.controller.WizardController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListController</servlet-name>
         <url-pattern>/List</url-pattern>
@@ -16,9 +20,17 @@
         <servlet-name>CreateController</servlet-name>
         <url-pattern>/Create</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WizardController</servlet-name>
+        <url-pattern>/Wizard</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
+    <context-param>
+        <param-name>HotelDao</param-name>
+        <param-value>com.distributed.hotelweb.model.dao.HotelDao</param-value>
+    </context-param>
 </web-app>

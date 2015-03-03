@@ -25,6 +25,7 @@ public class DeleteController extends HttpServlet {
     private static final String CONFIRM_PATH = "/View/confirm.jsp";
     private static final String COMPLETE_PATH = "/List";
     private static final String ERROR_PATH = "/error.jsp";
+    private static final String DAO_PARAM = "HotelDao";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -69,11 +70,11 @@ public class DeleteController extends HttpServlet {
         
         try
         {
-            HotelDao hotelDao = new HotelDao();
+            HotelDaoStrategy hotelDAO = (HotelDaoStrategy)Class.forName(request.getServletContext().getInitParameter(DAO_PARAM)).newInstance();
             
             int id = Integer.parseInt(request.getParameter("id"));
             
-            HotelModel hotel = hotelDao.getSingleHotel(id).get(0);
+            HotelModel hotel = hotelDAO.getSingleHotel(id).get(0);
             
             request.setAttribute("hotel", hotel);
         }
@@ -103,11 +104,11 @@ public class DeleteController extends HttpServlet {
         
         try
         {
-            HotelDao hotelDao = new HotelDao();
+            HotelDaoStrategy hotelDAO = (HotelDaoStrategy)Class.forName(request.getServletContext().getInitParameter(DAO_PARAM)).newInstance();
             
             int id = Integer.parseInt(request.getParameter("id"));
             
-            hotelDao.deleteHotel(id);
+            hotelDAO.deleteHotel(id);
         }
         catch(Exception e)
         {

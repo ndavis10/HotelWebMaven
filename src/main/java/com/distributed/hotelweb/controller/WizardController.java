@@ -5,10 +5,8 @@
  */
 package com.distributed.hotelweb.controller;
 
-import com.distributed.hotelweb.model.dao.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,12 +17,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author viewt_000
  */
-public class CreateController extends HttpServlet {
+public class WizardController extends HttpServlet {
 
-    private static final String CREATE_PATH = "/View/create.html";
-    private static final String COMPLETE_PATH = "/List";
     private static final String ERROR_PATH = "/error.jsp";
-    private static final String DAO_PARAM = "HotelDao";
+    private static final String LIST_PATH = "/List";
+    private static final String SEARCH_PARAM = "wizard";
+    private static final int ALL_HOTELS = 0;
+    private static final int STATE_SEARCH = 1;
+    private static final int CITY_SEARCH = 2;
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +43,10 @@ public class CreateController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CreateController</title>");            
+            out.println("<title>Servlet WizardController</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CreateController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet WizardController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,8 +64,7 @@ public class CreateController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher view = request.getRequestDispatcher(CREATE_PATH);
-        view.forward(request, response);
+        RequestDispatcher view = request.getRequestDispatcher(ERROR_PATH);
     }
 
     /**
@@ -79,29 +78,26 @@ public class CreateController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String destination = COMPLETE_PATH;
-        
-        
+        String destination = ERROR_PATH;
         try{
-            HotelDaoStrategy hotelDAO = (HotelDaoStrategy)Class.forName(request.getServletContext().getInitParameter(DAO_PARAM)).newInstance();
-            HotelModel insertHotel = new HotelModel();
-            insertHotel.setHotelName(request.getParameter("name"));
-            insertHotel.setStreetAddress(request.getParameter("address"));
-            insertHotel.setCity(request.getParameter("city"));
-            insertHotel.setState(request.getParameter("state"));
-            insertHotel.setPostalCode(request.getParameter("postalCode"));
-            insertHotel.setNotes(request.getParameter("notes"));            
-            
-            hotelDAO.createNewHotel(insertHotel.getHotelName(), 
-                    insertHotel.getStreetAddress(), insertHotel.getCity(),
-                    insertHotel.getState(), insertHotel.getPostalCode(), insertHotel.getNotes());
+            switch(Integer.parseInt(request.getParameter(SEARCH_PARAM)))
+            {
+                case ALL_HOTELS:
+                    break;
+                case STATE_SEARCH:
+                    request.setAttribute("state", request.getParameter("state"));
+                    break;
+                case CITY_SEARCH:
+                    request.setAttribute("city", request.getParameter("city"));
+                    break;
+            }
+            request.setAttribute("search", request.getParameter(SEARCH_PARAM));
+            destination = LIST_PATH;
         }
         catch(Exception e)
         {
-            destination = ERROR_PATH;
             request.setAttribute("msg", e.getMessage());
         }
-        
         RequestDispatcher view = request.getRequestDispatcher(destination);
         view.forward(request, response);
     }

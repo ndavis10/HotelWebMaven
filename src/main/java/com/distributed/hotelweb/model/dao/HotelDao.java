@@ -96,6 +96,37 @@ public class HotelDao implements HotelDaoStrategy {
     
     @Override
     /**
+     * Returns up to 50 hotels
+     * @return a list of up to 50 hotels
+     */
+    public List<HotelModel> getHotels(String condition) throws ClassNotFoundException, SQLException, IOException {
+        List<Map<String,Object>> rawRecords = db.getSelectedRecords(TABLE_NAME, condition, 50);
+        List<HotelModel> records = new ArrayList<>();
+        
+        for(Map<String,Object> map : rawRecords) {
+            HotelModel hotel = new HotelModel();
+            int modelHotelID = (Integer)map.get("hotel_id");
+            hotel.setHotelID(modelHotelID);
+            String hotelName = (String)map.get("hotel_name");
+            hotel.setHotelName(hotelName);
+            String streetAddress = (String)map.get("street_address");
+            hotel.setStreetAddress(streetAddress);
+            String city = (String)map.get("city");
+            hotel.setCity(city);
+            String state = (String)map.get("state");
+            hotel.setState(state);
+            String postalCode = (String)map.get("postal_code");
+            hotel.setPostalCode(postalCode);
+            String notes = (String)map.get("notes");
+            hotel.setNotes(notes);
+            records.add(hotel);
+        }
+        
+        return records;
+    }
+    
+    @Override
+    /**
      * Creates a new hotel in the database
      */
     public void createNewHotel(String hotelName, String streetAddress, String city, String state, String postalCode, String notes) throws ClassNotFoundException, SQLException, IOException

@@ -23,6 +23,10 @@ public class ListController extends HttpServlet {
 
     private static final String RESULTS_PAGE = "/View/all.jsp";
     private static final String ERROR_PAGE = "/error.jsp";
+    private static final String DAO_PARAM = "HotelDao";
+    private static final int ALL_HOTELS = 0;
+    private static final int STATE_SEARCH = 1;
+    private static final int CITY_SEARCH = 2;
             
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +40,12 @@ public class ListController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String destination = RESULTS_PAGE;
+        String destination = "";
         try{
-            HotelDaoStrategy hotelDAO = new HotelDao();
+            HotelDaoStrategy hotelDAO = (HotelDaoStrategy)Class.forName(request.getServletContext().getInitParameter(DAO_PARAM)).newInstance();
             List<HotelModel> hotelList = hotelDAO.getAllHotels();
+            
+            destination = RESULTS_PAGE;
             
             request.setAttribute("list", hotelList);
         }
@@ -50,7 +56,7 @@ public class ListController extends HttpServlet {
             request.setAttribute("msg", e.getMessage());
         }
         
-        RequestDispatcher view = request.getRequestDispatcher(response.encodeRedirectURL(destination));
+        RequestDispatcher view = request.getRequestDispatcher(destination);
         view.forward(request, response);
     }
 
@@ -66,7 +72,25 @@ public class ListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        String destination = "";
+        try{
+            HotelDaoStrategy hotelDAO = (HotelDaoStrategy)Class.forName(request.getServletContext().getInitParameter(DAO_PARAM)).newInstance();
+            List<HotelModel> hotelList = hotelDAO.getAllHotels();
+            
+            destination = RESULTS_PAGE;
+            
+            request.setAttribute("list", hotelList);
+        }
+        catch(Exception e)
+        {
+            //Update this with actual useful exception-handling
+            destination = ERROR_PAGE;
+            request.setAttribute("msg", e.getMessage());
+        }
+        
+        RequestDispatcher view = request.getRequestDispatcher(destination);
+        view.forward(request, response);
     }
 
     /**
@@ -80,7 +104,37 @@ public class ListController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        String destination = "";
+        try{
+            HotelDaoStrategy hotelDAO = (HotelDaoStrategy)Class.forName(request.getServletContext().getInitParameter(DAO_PARAM)).newInstance();
+            String conditions = "1 = 1";
+            switch(Integer.parseInt(request.getAttribute("search").toString()))
+            {
+                case ALL_HOTELS:
+                    break;
+                case STATE_SEARCH:
+                    conditions = "state = '" + request.getAttribute("state").toString() + "'";
+                    break;
+                case CITY_SEARCH:
+                    conditions = "city = '" + request.getAttribute("city").toString() + "'";
+                    break;
+            }
+            List<HotelModel> hotelList = hotelDAO.getHotels(conditions);
+            
+            destination = RESULTS_PAGE;
+            
+            request.setAttribute("list", hotelList);
+        }
+        catch(Exception e)
+        {
+            //Update this with actual useful exception-handling
+            destination = ERROR_PAGE;
+            request.setAttribute("msg", e.getMessage());
+        }
+        
+        RequestDispatcher view = request.getRequestDispatcher(destination);
+        view.forward(request, response);
     }
 
     /**

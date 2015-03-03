@@ -17,6 +17,7 @@ public interface HotelDaoStrategy {
 
     public abstract List<HotelModel> getAllHotels() throws ClassNotFoundException, SQLException, IOException;
     public abstract List<HotelModel> getSingleHotel(int hotelID) throws ClassNotFoundException, SQLException, IOException;
+    public abstract List<HotelModel> getHotels(String Condition) throws ClassNotFoundException, SQLException, IOException;
     public abstract void createNewHotel(String hotelName, String streetAddress, String city, String state, String postalCode, String notes) throws ClassNotFoundException, SQLException, IOException;
     public abstract void updateHotel(int hotelID, String hotelName, String streetAddress, String city, String state, String postalCode, String notes) 
             throws ClassNotFoundException, SQLException, IOException;
